@@ -137,6 +137,22 @@ subscription.purchase_max: "已達到該訂閱方案購買上限"
 subscription.invalid_id: "無效的訂閱ID"
 subscription.invalid_user_id: "無效的使用者ID"
 
+# Ticket messages
+ticket.subject_empty: "工單主題不能為空"
+ticket.content_empty: "工單內容不能為空"
+ticket.not_found: "工單不存在"
+ticket.closed: "工單已關閉，無法繼續回覆"
+ticket.invalid_status: "無效的工單狀態"
+ticket.invalid_type: "無效的工單類型"
+ticket.invoice_not_found: "未找到發票申請資訊"
+ticket.invoice_status_invalid: "無效的發票狀態"
+ticket.invoice_order_empty: "請至少選擇一個充值訂單"
+ticket.invoice_order_invalid: "選中的充值訂單無效或不可開票"
+ticket.invoice_order_duplicate: "選中的充值訂單已存在未完成的發票申請"
+ticket.invoice_company_empty: "公司名稱不能為空"
+ticket.invoice_tax_number_empty: "稅號不能為空"
+ticket.invoice_email_empty: "郵箱不能為空"
+
 # Payment messages
 payment.not_configured: "當前管理員未設定支付資訊"
 payment.method_not_exists: "不存在此支付方式"

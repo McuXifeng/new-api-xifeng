@@ -1,0 +1,388 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Button,
+  Card,
+  Descriptions,
+  Empty,
+  Input,
+  Select,
+  Space,
+  Tag,
+  Typography,
+} from '@douyinfe/semi-ui';
+import { IconSearch } from '@douyinfe/semi-icons';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { API, showError, showSuccess, timestamp2string } from '../../helpers';
+import { useTableCompactMode } from '../../hooks/common/useTableCompactMode';
+import TicketsPage from '../../components/table/tickets';
+import TicketConversation from '../../components/ticket/TicketConversation';
+import TicketReplyBox from '../../components/ticket/TicketReplyBox';
+import TicketStatusTag from '../../components/ticket/TicketStatusTag';
+import InvoiceDetail from '../../components/ticket/InvoiceDetail';
+import {
+  canReplyTicket,
+  getTicketPriorityColor,
+  getTicketPriorityOptions,
+  getTicketPriorityText,
+  getTicketStatusOptions,
+  getTicketTypeOptions,
+  getTicketTypeText,
+} from '../../components/ticket/ticketUtils';
+
+const { Title, Text } = Typography;
+
+const AdminTicketDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [invoice, setInvoice] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [statusValue, setStatusValue] = useState(1);
+  const [priorityValue, setPriorityValue] = useState(2);
+
+  const loadInvoiceDetail = useCallback(async () => {
+    const res = await API.get(`/api/ticket/admin/${id}/invoice`);
+    if (!res.data?.success) {
+      throw new Error(res.data?.message || t('发票详情加载失败'));
+    }
+    const data = res.data?.data || {};
+    setInvoice(data.invoice || null);
+    setOrders(data.orders || []);
+  }, [id, t]);
+
+  const loadDetail = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const res = await API.get(`/api/ticket/admin/${id}`);
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || t('工单详情加载失败'));
+      }
+      const data = res.data?.data || {};
+      setTicket(data.ticket || null);
+      setMessages(data.messages || []);
+      setStatusValue(Number(data.ticket?.status || 1));
+      setPriorityValue(Number(data.ticket?.priority || 2));
+
+      if (data.ticket?.type === 'invoice') {
+        await loadInvoiceDetail();
+      } else {
+        setInvoice(null);
+        setOrders([]);
+      }
+    } catch (error) {
+      showError(error?.message || t('请求失败'));
+    } finally {
+      setLoading(false);
+    }
+  }, [id, loadInvoiceDetail, t]);
+
+  useEffect(() => {
+    loadDetail();
+  }, [loadDetail]);
+
+  const detailRows = useMemo(() => {
+    if (!ticket) return [];
+    return [
+      { key: 'ID', value: `#${ticket.id}` },
+      { key: t('用户'), value: `${ticket.username || '-'} (UID: ${ticket.user_id || '-'})` },
+      { key: t('工单类型'), value: getTicketTypeText(ticket.type, t) },
+      {
+        key: t('优先级'),
+        value: (
+          <Tag color={getTicketPriorityColor(ticket.priority)} shape='circle'>
+            {getTicketPriorityText(ticket.priority, t)}
+          </Tag>
+        ),
+      },
+      {
+        key: t('创建时间'),
+        value: ticket.created_time ? timestamp2string(ticket.created_time) : '-',
+      },
+      {
+        key: t('更新时间'),
+        value: ticket.updated_time ? timestamp2string(ticket.updated_time) : '-',
+      },
+    ];
+  }, [ticket, t]);
+
+  const handleReply = async (content) => {
+    try {
+      const res = await API.post(`/api/ticket/admin/${id}/message`, { content });
+      if (res.data?.success) {
+        showSuccess(t('回复已发送'));
+        await loadDetail();
+        return true;
+      }
+      showError(res.data?.message || t('回复发送失败'));
+    } catch (error) {
+      showError(t('请求失败'));
+    }
+    return false;
+  };
+
+  const handleSaveStatus = async () => {
+    setSaving(true);
+    try {
+      const res = await API.put(`/api/ticket/admin/${id}/status`, {
+        status: statusValue,
+        priority: priorityValue,
+      });
+      if (res.data?.success) {
+        showSuccess(t('工单状态已更新'));
+        await loadDetail();
+      } else {
+        showError(res.data?.message || t('更新工单状态失败'));
+      }
+    } catch (error) {
+      showError(t('请求失败'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleInvoiceStatusChange = async (invoiceStatus) => {
+    setSaving(true);
+    try {
+      const res = await API.put(`/api/ticket/admin/${id}/invoice/status`, {
+        invoice_status: invoiceStatus,
+      });
+      if (res.data?.success) {
+        showSuccess(t('发票状态已更新'));
+        await loadDetail();
+      } else {
+        showError(res.data?.message || t('更新发票状态失败'));
+      }
+    } catch (error) {
+      showError(t('请求失败'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!ticket && !loading) {
+    return (
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        description={t('未找到工单')}
+      />
+    );
+  }
+
+  return (
+    <div className='flex flex-col gap-4'>
+      <Card className='!rounded-2xl shadow-sm border-0'>
+        <div className='flex flex-col gap-4'>
+          <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-3'>
+            <div className='flex flex-col gap-2'>
+              <Space>
+                <Button
+                  theme='borderless'
+                  onClick={() => navigate('/console/ticket_admin')}
+                >
+                  {t('返回工单管理')}
+                </Button>
+                <TicketStatusTag status={ticket?.status} t={t} />
+              </Space>
+              <Title heading={4} className='!mb-0'>
+                {ticket?.subject || '-'}
+              </Title>
+              <Text type='secondary'>
+                {t('在这里回复用户、调整状态与优先级，并查看发票申请详情')}
+              </Text>
+            </div>
+            <Space wrap>
+              <Select
+                value={statusValue}
+                style={{ width: 160 }}
+                optionList={getTicketStatusOptions(t)}
+                onChange={setStatusValue}
+              />
+              <Select
+                value={priorityValue}
+                style={{ width: 160 }}
+                optionList={getTicketPriorityOptions(t)}
+                onChange={setPriorityValue}
+              />
+              <Button
+                theme='solid'
+                type='primary'
+                loading={saving}
+                onClick={handleSaveStatus}
+              >
+                {t('保存状态')}
+              </Button>
+            </Space>
+          </div>
+          <Descriptions data={detailRows} />
+        </div>
+      </Card>
+
+      {ticket?.type === 'invoice' && (
+        <InvoiceDetail
+          invoice={invoice}
+          orders={orders}
+          loading={saving}
+          onStatusChange={handleInvoiceStatusChange}
+          t={t}
+        />
+      )}
+
+      <TicketConversation
+        messages={messages}
+        currentUserId={ticket?.admin_id}
+        loading={loading}
+        t={t}
+      />
+
+      <TicketReplyBox
+        title={t('管理员回复')}
+        disabled={!canReplyTicket(ticket)}
+        loading={saving}
+        onSubmit={handleReply}
+        t={t}
+      />
+    </div>
+  );
+};
+
+const TicketAdmin = () => {
+  const { id } = useParams();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [compactMode, setCompactMode] = useTableCompactMode('tickets-admin');
+  const [tickets, setTickets] = useState([]);
+  const [ticketCount, setTicketCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [activePage, setActivePage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [keyword, setKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const loadTickets = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await API.get('/api/ticket/admin', {
+        params: {
+          p: activePage,
+          page_size: pageSize,
+          status: statusFilter || undefined,
+          type: typeFilter || undefined,
+          keyword: searchKeyword || undefined,
+        },
+      });
+      if (res.data?.success) {
+        const pageData = res.data?.data || {};
+        setTickets(pageData.items || []);
+        setTicketCount(Number(pageData.total || 0));
+      } else {
+        showError(res.data?.message || t('工单列表加载失败'));
+      }
+    } catch (error) {
+      showError(t('请求失败'));
+    } finally {
+      setLoading(false);
+    }
+  }, [activePage, pageSize, searchKeyword, statusFilter, typeFilter, t]);
+
+  useEffect(() => {
+    if (id) return;
+    loadTickets();
+  }, [id, loadTickets]);
+
+  const statusOptions = useMemo(
+    () => [
+      { label: t('全部状态'), value: '' },
+      ...getTicketStatusOptions(t),
+    ],
+    [t],
+  );
+
+  const typeOptions = useMemo(
+    () => [
+      { label: t('全部类型'), value: '' },
+      ...getTicketTypeOptions(t, { includeInvoice: true }),
+    ],
+    [t],
+  );
+
+  if (id) {
+    return (
+      <div className='mt-[60px] px-2'>
+        <AdminTicketDetail />
+      </div>
+    );
+  }
+
+  return (
+    <div className='mt-[60px] px-2'>
+    <TicketsPage
+      title={t('工单管理')}
+      description={t('统一查看全部工单、回复用户并推进处理状态')}
+      compactMode={compactMode}
+      setCompactMode={setCompactMode}
+      tickets={tickets}
+      loading={loading}
+      activePage={activePage}
+      pageSize={pageSize}
+      ticketCount={ticketCount}
+      handlePageChange={setActivePage}
+      handlePageSizeChange={(size) => {
+        setPageSize(size);
+        setActivePage(1);
+      }}
+      admin
+      onOpenDetail={(ticket) => navigate(`/console/ticket_admin/${ticket.id}`)}
+      t={t}
+      actionsArea={
+        <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-3 w-full'>
+          <Space wrap>
+            <Input
+              value={keyword}
+              placeholder={t('搜索工单主题、用户名或 ID')}
+              style={{ width: 280 }}
+              prefix={<IconSearch />}
+              showClear
+              onChange={setKeyword}
+              onEnterPress={() => {
+                setSearchKeyword(keyword);
+                setActivePage(1);
+              }}
+            />
+          </Space>
+          <Space wrap>
+            <Select
+              value={statusFilter}
+              optionList={statusOptions}
+              style={{ width: 160 }}
+              onChange={(value) => {
+                setStatusFilter(value);
+                setActivePage(1);
+              }}
+            />
+            <Select
+              value={typeFilter}
+              optionList={typeOptions}
+              style={{ width: 160 }}
+              onChange={(value) => {
+                setTypeFilter(value);
+                setActivePage(1);
+              }}
+            />
+          </Space>
+        </div>
+      }
+    />
+    </div>
+  );
+};
+
+export default TicketAdmin;
+

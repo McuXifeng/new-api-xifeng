@@ -37,6 +37,9 @@ import Redemption from './pages/Redemption';
 import InvitationCode from './pages/InvitationCode';
 import TopUp from './pages/TopUp';
 import Log from './pages/Log';
+import Ticket from './pages/Ticket';
+import TicketDetail from './pages/TicketDetail';
+import TicketAdmin from './pages/TicketAdmin';
 import Chat from './pages/Chat';
 import Chat2Link from './pages/Chat2Link';
 import Midjourney from './pages/Midjourney';
@@ -284,6 +287,46 @@ function App() {
                 <TopUp />
               </Suspense>
             </PrivateRoute>
+          }
+        />
+        <Route
+          path='/console/ticket'
+          element={
+            <PrivateRoute>
+              <Suspense fallback={<Loading></Loading>} key={location.pathname}>
+                <Ticket />
+              </Suspense>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/console/ticket/:id'
+          element={
+            <PrivateRoute>
+              <Suspense fallback={<Loading></Loading>} key={location.pathname}>
+                <TicketDetail />
+              </Suspense>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/console/ticket_admin'
+          element={
+            <AdminRoute>
+              <Suspense fallback={<Loading></Loading>} key={location.pathname}>
+                <TicketAdmin />
+              </Suspense>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path='/console/ticket_admin/:id'
+          element={
+            <AdminRoute>
+              <Suspense fallback={<Loading></Loading>} key={location.pathname}>
+                <TicketAdmin />
+              </Suspense>
+            </AdminRoute>
           }
         />
         <Route

@@ -52,6 +52,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       log: true,
       midjourney: true,
       task: true,
+      ticket: true,
     },
     personal: {
       enabled: true,
@@ -67,6 +68,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       invitation_code: true,
       user: true,
       subscription: true,
+      ticket_admin: true,
       setting: true,
     },
   });
@@ -84,6 +86,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       log: true,
       midjourney: true,
       task: true,
+      ticket: true,
     },
     personal: {
       enabled: true,
@@ -99,6 +102,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       invitation_code: true,
       user: true,
       subscription: true,
+      ticket_admin: true,
       setting: true,
     },
   });
@@ -229,6 +233,7 @@ export default function SettingsSidebarModulesAdmin(props) {
           description: t('绘图任务记录'),
         },
         { key: 'task', title: t('任务日志'), description: t('系统任务记录') },
+        { key: 'ticket', title: t('工单'), description: t('用户工单中心') },
       ],
     },
     {
@@ -260,6 +265,11 @@ export default function SettingsSidebarModulesAdmin(props) {
           key: 'subscription',
           title: t('订阅管理'),
           description: t('订阅套餐管理'),
+        },
+        {
+          key: 'ticket_admin',
+          title: t('工单管理'),
+          description: t('工单处理与审核'),
         },
         {
           key: 'redemption',

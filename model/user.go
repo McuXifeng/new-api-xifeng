@@ -117,6 +117,7 @@ func generateDefaultSidebarConfigForRole(userRole int) string {
 		"log":        true,
 		"midjourney": true,
 		"task":       true,
+		"ticket":     true,
 	}
 
 	// 个人中心区域 - 所有用户都可以访问
@@ -136,6 +137,7 @@ func generateDefaultSidebarConfigForRole(userRole int) string {
 			"redemption":      true,
 			"invitation_code": true,
 			"user":            true,
+			"ticket_admin":    true,
 			"setting":         false, // 管理员不能访问系统设置
 		}
 	} else if userRole == common.RoleRootUser {
@@ -147,6 +149,7 @@ func generateDefaultSidebarConfigForRole(userRole int) string {
 			"redemption":      true,
 			"invitation_code": true,
 			"user":            true,
+			"ticket_admin":    true,
 			"setting":         true,
 		}
 	}

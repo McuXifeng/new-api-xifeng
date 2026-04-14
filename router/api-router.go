@@ -168,6 +168,30 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.GET("/subscription/epay/notify", controller.SubscriptionEpayNotify)
 		apiRouter.GET("/subscription/epay/return", controller.SubscriptionEpayReturn)
 		apiRouter.POST("/subscription/epay/return", controller.SubscriptionEpayReturn)
+
+		ticketRoute := apiRouter.Group("/ticket")
+		ticketRoute.Use(middleware.UserAuth())
+		{
+			ticketRoute.POST("/", controller.CreateTicket)
+			ticketRoute.GET("/self", controller.GetUserTickets)
+			ticketRoute.GET("/self/:id", controller.GetUserTicket)
+			ticketRoute.POST("/self/:id/message", controller.CreateUserTicketMessage)
+			ticketRoute.PUT("/self/:id/close", controller.CloseUserTicket)
+			ticketRoute.GET("/invoice/eligible_orders", controller.GetEligibleInvoiceOrders)
+			ticketRoute.POST("/invoice/", controller.CreateInvoiceTicket)
+		}
+
+		ticketAdminRoute := apiRouter.Group("/ticket/admin")
+		ticketAdminRoute.Use(middleware.AdminAuth())
+		{
+			ticketAdminRoute.GET("/", controller.GetAllTickets)
+			ticketAdminRoute.GET("/:id", controller.GetTicket)
+			ticketAdminRoute.POST("/:id/message", controller.CreateAdminTicketMessage)
+			ticketAdminRoute.PUT("/:id/status", controller.UpdateTicketStatus)
+			ticketAdminRoute.GET("/:id/invoice", controller.GetTicketInvoice)
+			ticketAdminRoute.PUT("/:id/invoice/status", controller.UpdateInvoiceStatus)
+		}
+
 		optionRoute := apiRouter.Group("/option")
 		optionRoute.Use(middleware.RootAuth())
 		{

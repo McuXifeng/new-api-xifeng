@@ -155,6 +155,24 @@ const (
 	MsgSubscriptionInvalidUserId    = "subscription.invalid_user_id"
 )
 
+// Ticket related messages
+const (
+	MsgTicketSubjectEmpty          = "ticket.subject_empty"
+	MsgTicketContentEmpty          = "ticket.content_empty"
+	MsgTicketNotFound              = "ticket.not_found"
+	MsgTicketClosed                = "ticket.closed"
+	MsgTicketInvalidStatus         = "ticket.invalid_status"
+	MsgTicketInvalidType           = "ticket.invalid_type"
+	MsgTicketInvoiceNotFound       = "ticket.invoice_not_found"
+	MsgTicketInvoiceStatusInvalid  = "ticket.invoice_status_invalid"
+	MsgTicketInvoiceOrderEmpty     = "ticket.invoice_order_empty"
+	MsgTicketInvoiceOrderInvalid   = "ticket.invoice_order_invalid"
+	MsgTicketInvoiceOrderDuplicate = "ticket.invoice_order_duplicate"
+	MsgTicketInvoiceCompanyEmpty   = "ticket.invoice_company_empty"
+	MsgTicketInvoiceTaxNumberEmpty = "ticket.invoice_tax_number_empty"
+	MsgTicketInvoiceEmailEmpty     = "ticket.invoice_email_empty"
+)
+
 // Payment related messages
 const (
 	MsgPaymentNotConfigured    = "payment.not_configured"

@@ -76,6 +76,7 @@ const NotificationSettings = ({
       log: true,
       midjourney: true,
       task: true,
+      ticket: true,
     },
     personal: {
       enabled: true,
@@ -88,6 +89,7 @@ const NotificationSettings = ({
       models: true,
       deployment: true,
       subscription: true,
+      ticket_admin: true,
       redemption: true,
       user: true,
       setting: true,
@@ -164,6 +166,7 @@ const NotificationSettings = ({
         log: true,
         midjourney: true,
         task: true,
+        ticket: true,
       },
       personal: { enabled: true, topup: true, personal: true },
       admin: {
@@ -172,6 +175,7 @@ const NotificationSettings = ({
         models: true,
         deployment: true,
         subscription: true,
+        ticket_admin: true,
         redemption: true,
         user: true,
         setting: true,
@@ -271,6 +275,7 @@ const NotificationSettings = ({
           description: t('绘图任务记录'),
         },
         { key: 'task', title: t('任务日志'), description: t('系统任务记录') },
+        { key: 'ticket', title: t('工单'), description: t('用户工单中心') },
       ],
     },
     {
@@ -303,6 +308,11 @@ const NotificationSettings = ({
           key: 'subscription',
           title: t('订阅管理'),
           description: t('订阅套餐管理'),
+        },
+        {
+          key: 'ticket_admin',
+          title: t('工单管理'),
+          description: t('工单处理与审核'),
         },
         {
           key: 'redemption',

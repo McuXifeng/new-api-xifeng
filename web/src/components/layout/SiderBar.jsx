@@ -37,8 +37,10 @@ const routerMap = {
   redemption: '/console/redemption',
   invitation_code: '/console/invitation_code',
   topup: '/console/topup',
+  ticket: '/console/ticket',
   user: '/console/user',
   subscription: '/console/subscription',
+  ticket_admin: '/console/ticket_admin',
   log: '/console/log',
   midjourney: '/console/midjourney',
   setting: '/console/setting',
@@ -131,6 +133,11 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         to: '/topup',
       },
       {
+        text: t('工单'),
+        itemKey: 'ticket',
+        to: '/ticket',
+      },
+      {
         text: t('个人设置'),
         itemKey: 'personal',
         to: '/personal',
@@ -158,6 +165,12 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         text: t('订阅管理'),
         itemKey: 'subscription',
         to: '/subscription',
+        className: isAdmin() ? '' : 'tableHiddle',
+      },
+      {
+        text: t('工单管理'),
+        itemKey: 'ticket_admin',
+        to: '/ticket_admin',
         className: isAdmin() ? '' : 'tableHiddle',
       },
       {
@@ -293,6 +306,13 @@ const SiderBar = ({ onNavigate = () => {} }) => {
       } else {
         matchingKey = 'chat';
       }
+    }
+
+    if (!matchingKey && currentPath.startsWith('/console/ticket_admin/')) {
+      matchingKey = 'ticket_admin';
+    }
+    if (!matchingKey && currentPath.startsWith('/console/ticket/')) {
+      matchingKey = 'ticket';
     }
 
     // 如果找到匹配的键，更新选中的键

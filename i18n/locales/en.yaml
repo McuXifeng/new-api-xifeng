@@ -136,6 +136,22 @@ subscription.purchase_max: "Purchase limit for this plan has been reached"
 subscription.invalid_id: "Invalid subscription ID"
 subscription.invalid_user_id: "Invalid user ID"
 
+# Ticket messages
+ticket.subject_empty: "Ticket subject cannot be empty"
+ticket.content_empty: "Ticket content cannot be empty"
+ticket.not_found: "Ticket not found"
+ticket.closed: "This ticket is closed and cannot be replied to"
+ticket.invalid_status: "Invalid ticket status"
+ticket.invalid_type: "Invalid ticket type"
+ticket.invoice_not_found: "Invoice request details not found"
+ticket.invoice_status_invalid: "Invalid invoice status"
+ticket.invoice_order_empty: "Please select at least one top-up order"
+ticket.invoice_order_invalid: "Selected top-up orders are invalid or not eligible"
+ticket.invoice_order_duplicate: "Some selected top-up orders already have a non-rejected invoice request"
+ticket.invoice_company_empty: "Company name cannot be empty"
+ticket.invoice_tax_number_empty: "Tax number cannot be empty"
+ticket.invoice_email_empty: "Email cannot be empty"
+
 # Payment messages
 payment.not_configured: "Payment information has not been configured by administrator"
 payment.method_not_exists: "Payment method does not exist"
