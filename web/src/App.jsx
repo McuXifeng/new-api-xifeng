@@ -36,6 +36,7 @@ import Token from './pages/Token';
 import Redemption from './pages/Redemption';
 import InvitationCode from './pages/InvitationCode';
 import TopUp from './pages/TopUp';
+import TopupHistory from './pages/TopupHistory';
 import Log from './pages/Log';
 import Ticket from './pages/Ticket';
 import TicketDetail from './pages/TicketDetail';
@@ -294,6 +295,16 @@ function App() {
             <PrivateRoute>
               <Suspense fallback={<Loading></Loading>} key={location.pathname}>
                 <TopUp />
+              </Suspense>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/console/topup_history'
+          element={
+            <PrivateRoute>
+              <Suspense fallback={<Loading></Loading>} key={location.pathname}>
+                <TopupHistory />
               </Suspense>
             </PrivateRoute>
           }

@@ -37,6 +37,7 @@ const routerMap = {
   redemption: '/console/redemption',
   invitation_code: '/console/invitation_code',
   topup: '/console/topup',
+  topup_history: '/console/topup_history',
   ticket: '/console/ticket',
   user: '/console/user',
   risk: '/console/risk',
@@ -55,7 +56,7 @@ const routerMap = {
   personal: '/console/personal',
 };
 
-const SiderBar = ({ onNavigate = () => {} }) => {
+const SiderBar = ({ onNavigate = () => { } }) => {
   const { t } = useTranslation();
   const [collapsed, toggleCollapsed] = useSidebarCollapsed();
   const {
@@ -134,7 +135,12 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         to: '/topup',
       },
       {
-        text: t('工单'),
+        text: t('充值账单'),
+        itemKey: 'topup_history',
+        to: '/topup_history',
+      },
+      {
+        text: t('工单支持'),
         itemKey: 'ticket',
         to: '/ticket',
       },

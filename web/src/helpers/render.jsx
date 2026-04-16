@@ -67,6 +67,7 @@ import {
   Image as ImageIcon,
   CheckSquare,
   CreditCard,
+  Receipt,
   Layers,
   Gift,
   Ticket,
@@ -135,6 +136,8 @@ export function getLucideIcon(key, selected = false) {
       return <MessageSquare {...commonProps} color={iconColor} />;
     case 'topup':
       return <CreditCard {...commonProps} color={iconColor} />;
+    case 'topup_history':
+      return <Receipt {...commonProps} color={iconColor} />;
     case 'channel':
       return <Layers {...commonProps} color={iconColor} />;
     case 'redemption':

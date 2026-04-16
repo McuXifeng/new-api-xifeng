@@ -1,20 +1,15 @@
 import React, { useRef, useState } from 'react';
 import {
-  Button,
   Form,
-  Select,
-  SideSheet,
-  Space,
+  Modal,
 } from '@douyinfe/semi-ui';
 import { API, showError, showSuccess } from '../../../../helpers';
-import { useIsMobile } from '../../../../hooks/common/useIsMobile';
 import {
   getTicketPriorityOptions,
   getTicketTypeOptions,
 } from '../../../ticket/ticketUtils';
 
 const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
-  const isMobile = useIsMobile();
   const [loading, setLoading] = useState(false);
   const formApiRef = useRef(null);
 
@@ -42,31 +37,25 @@ const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
   };
 
   return (
-    <SideSheet
+    <Modal
       title={t('创建工单')}
       visible={visible}
-      width={isMobile ? '100%' : 560}
-      closeIcon={null}
       onCancel={onClose}
-      footer={
-        <div className='flex justify-end bg-white'>
-          <Space>
-            <Button
-              theme='solid'
-              type='primary'
-              loading={loading}
-              onClick={() => formApiRef.current?.submitForm()}
-            >
-              {t('提交工单')}
-            </Button>
-            <Button theme='light' onClick={onClose}>
-              {t('取消')}
-            </Button>
-          </Space>
-        </div>
-      }
+      onOk={() => formApiRef.current?.submitForm()}
+      okText={t('提交工单')}
+      cancelText={t('取消')}
+      confirmLoading={loading}
+      centered
+      width={560}
+      style={{ maxWidth: '92vw' }}
+      bodyStyle={{
+        maxHeight: 'calc(80vh - 120px)',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }}
     >
       <Form
+        layout='vertical'
         initValues={{
           type: 'general',
           priority: 2,
@@ -99,14 +88,14 @@ const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
         <Form.TextArea
           field='content'
           label={t('问题描述')}
-          autosize={{ minRows: 6, maxRows: 10 }}
+          autosize={{ minRows: 4, maxRows: 8 }}
           maxLength={5000}
           showClear
           placeholder={t('请详细描述问题，方便管理员更快定位')}
           rules={[{ required: true, message: t('工单内容不能为空') }]}
         />
       </Form>
-    </SideSheet>
+    </Modal>
   );
 };
 

@@ -7,7 +7,6 @@ import { API, showError, showSuccess } from '../../helpers';
 import { useTableCompactMode } from '../../hooks/common/useTableCompactMode';
 import TicketsPage from '../../components/table/tickets';
 import CreateTicketModal from '../../components/table/tickets/modals/CreateTicketModal';
-import CreateInvoiceTicketModal from '../../components/table/tickets/modals/CreateInvoiceTicketModal';
 import {
   getTicketStatusOptions,
   getTicketTypeOptions,
@@ -25,8 +24,6 @@ const Ticket = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-
   const loadTickets = useCallback(async () => {
     setLoading(true);
     try {
@@ -104,16 +101,6 @@ const Ticket = () => {
         }}
         t={t}
       />
-      <CreateInvoiceTicketModal
-        visible={showInvoiceModal}
-        onClose={() => setShowInvoiceModal(false)}
-        onSuccess={() => {
-          setActivePage(1);
-          loadTickets();
-        }}
-        t={t}
-      />
-
       <TicketsPage
         title={t('工单中心')}
         description={t('在这里提交问题、查看处理进度，并与管理员继续沟通')}
@@ -142,13 +129,6 @@ const Ticket = () => {
                 onClick={() => setShowCreateModal(true)}
               >
                 {t('新建工单')}
-              </Button>
-              <Button
-                theme='light'
-                type='primary'
-                onClick={() => setShowInvoiceModal(true)}
-              >
-                {t('申请发票')}
               </Button>
             </Space>
             <Space wrap>
