@@ -230,6 +230,20 @@ func SetApiRouter(router *gin.Engine) {
 			ratioSyncRoute.GET("/channels", controller.GetSyncableChannels)
 			ratioSyncRoute.POST("/fetch", controller.FetchUpstreamRatios)
 		}
+		riskRoute := apiRouter.Group("/risk")
+		riskRoute.Use(middleware.AdminAuth())
+		{
+			riskRoute.GET("/overview", controller.GetRiskCenterOverview)
+			riskRoute.GET("/config", controller.GetRiskCenterConfig)
+			riskRoute.PUT("/config", controller.UpdateRiskCenterConfig)
+			riskRoute.GET("/rules", controller.GetRiskRules)
+			riskRoute.POST("/rules", controller.CreateRiskRule)
+			riskRoute.PUT("/rules/:id", controller.UpdateRiskRule)
+			riskRoute.DELETE("/rules/:id", controller.DeleteRiskRule)
+			riskRoute.GET("/subjects", controller.GetRiskSubjects)
+			riskRoute.POST("/subjects/:scope/:id/unblock", controller.UnblockRiskSubject)
+			riskRoute.GET("/incidents", controller.GetRiskIncidents)
+		}
 		channelRoute := apiRouter.Group("/channel")
 		channelRoute.Use(middleware.AdminAuth())
 		{

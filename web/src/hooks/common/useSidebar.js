@@ -49,6 +49,7 @@ export const DEFAULT_ADMIN_CONFIG = {
     enabled: true,
     channel: true,
     models: true,
+    risk: true,
     deployment: true,
     redemption: true,
     invitation_code: true,

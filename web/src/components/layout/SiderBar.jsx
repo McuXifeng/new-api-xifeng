@@ -39,6 +39,7 @@ const routerMap = {
   topup: '/console/topup',
   ticket: '/console/ticket',
   user: '/console/user',
+  risk: '/console/risk',
   subscription: '/console/subscription',
   ticket_admin: '/console/ticket_admin',
   log: '/console/log',
@@ -177,6 +178,12 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         text: t('模型管理'),
         itemKey: 'models',
         to: '/console/models',
+        className: isAdmin() ? '' : 'tableHiddle',
+      },
+      {
+        text: t('风控中心'),
+        itemKey: 'risk',
+        to: '/console/risk',
         className: isAdmin() ? '' : 'tableHiddle',
       },
       {

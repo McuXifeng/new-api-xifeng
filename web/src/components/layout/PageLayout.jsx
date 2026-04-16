@@ -56,6 +56,7 @@ const PageLayout = () => {
     '/console/redemption',
     '/console/invitation_code',
     '/console/user',
+    '/console/risk',
     '/console/token',
     '/console/midjourney',
     '/console/task',

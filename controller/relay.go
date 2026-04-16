@@ -121,6 +121,17 @@ func Relay(c *gin.Context, relayFormat types.RelayFormat) {
 		newAPIError = types.NewError(err, types.ErrorCodeGenRelayInfoFailed)
 		return
 	}
+	c.Set("risk_audit", relayInfo.RiskAudit)
+	if riskErr := service.RiskControlBeforeRelay(c, relayInfo); riskErr != nil {
+		newAPIError = riskErr
+		c.Set("risk_audit", relayInfo.RiskAudit)
+		service.RecordRiskBlockedAccess(c, relayInfo, service.GetBlockingDecisionFromAudit(relayInfo.RiskAudit))
+		return
+	}
+	defer func() {
+		c.Set("risk_audit", relayInfo.RiskAudit)
+		service.RiskControlAfterRelay(c, relayInfo, newAPIError)
+	}()
 
 	needSensitiveCheck := setting.ShouldCheckPromptSensitive()
 	needCountToken := constant.CountToken
@@ -384,6 +395,11 @@ func processChannelError(c *gin.Context, channelError types.ChannelError, err *t
 		}
 		service.AppendChannelAffinityAdminInfo(c, adminInfo)
 		other["admin_info"] = adminInfo
+		if rawAudit, ok := c.Get("risk_audit"); ok {
+			if audit, ok := rawAudit.(*types.RiskAudit); ok {
+				service.AppendRiskAuditToOther(other, audit)
+			}
+		}
 		startTime := common.GetContextKeyTime(c, constant.ContextKeyRequestStartTime)
 		if startTime.IsZero() {
 			startTime = time.Now()

@@ -63,6 +63,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       enabled: true,
       channel: true,
       models: true,
+      risk: true,
       deployment: true,
       redemption: true,
       invitation_code: true,
@@ -97,6 +98,7 @@ export default function SettingsSidebarModulesAdmin(props) {
       enabled: true,
       channel: true,
       models: true,
+      risk: true,
       deployment: true,
       redemption: true,
       invitation_code: true,
@@ -256,6 +258,11 @@ export default function SettingsSidebarModulesAdmin(props) {
       modules: [
         { key: 'channel', title: t('渠道管理'), description: t('API渠道配置') },
         { key: 'models', title: t('模型管理'), description: t('AI模型配置') },
+        {
+          key: 'risk',
+          title: t('风控中心'),
+          description: t('风险规则和异常主体'),
+        },
         {
           key: 'deployment',
           title: t('模型部署'),

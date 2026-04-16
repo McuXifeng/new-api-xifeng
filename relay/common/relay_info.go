@@ -151,6 +151,7 @@ type RelayInfo struct {
 	RuntimeHeadersOverride                map[string]interface{}
 	UseRuntimeHeadersOverride             bool
 	ParamOverrideAudit                    []string
+	RiskAudit                             *types.RiskAudit
 
 	PriceData types.PriceData
 
