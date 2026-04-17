@@ -67,6 +67,11 @@ func InitOptionMap() {
 	common.OptionMap["SMTPToken"] = ""
 	common.OptionMap["SMTPSSLEnabled"] = strconv.FormatBool(common.SMTPSSLEnabled)
 	common.OptionMap["SMTPForceAuthLogin"] = strconv.FormatBool(common.SMTPForceAuthLogin)
+	common.OptionMap["TicketNotifyEnabled"] = strconv.FormatBool(common.TicketNotifyEnabled)
+	common.OptionMap["TicketAdminEmail"] = common.TicketAdminEmail
+	common.OptionMap["PaymentNotifyUserEnabled"] = strconv.FormatBool(common.PaymentNotifyUserEnabled)
+	common.OptionMap["PaymentNotifyAdminEnabled"] = strconv.FormatBool(common.PaymentNotifyAdminEnabled)
+	common.OptionMap["PaymentAdminEmail"] = common.PaymentAdminEmail
 	common.OptionMap["Notice"] = ""
 	common.OptionMap["About"] = ""
 	common.OptionMap["HomePageContent"] = ""
@@ -321,6 +326,12 @@ func updateOptionMap(key string, value string) (err error) {
 			common.SMTPSSLEnabled = boolValue
 		case "SMTPForceAuthLogin":
 			common.SMTPForceAuthLogin = boolValue
+		case "TicketNotifyEnabled":
+			common.TicketNotifyEnabled = boolValue
+		case "PaymentNotifyUserEnabled":
+			common.PaymentNotifyUserEnabled = boolValue
+		case "PaymentNotifyAdminEnabled":
+			common.PaymentNotifyAdminEnabled = boolValue
 		case "WorkerAllowHttpImageRequestEnabled":
 			system_setting.WorkerAllowHttpImageRequestEnabled = boolValue
 		case "DefaultUseAutoGroup":
@@ -343,6 +354,10 @@ func updateOptionMap(key string, value string) (err error) {
 		common.SMTPFrom = value
 	case "SMTPToken":
 		common.SMTPToken = value
+	case "TicketAdminEmail":
+		common.TicketAdminEmail = value
+	case "PaymentAdminEmail":
+		common.PaymentAdminEmail = value
 	case "ServerAddress":
 		system_setting.ServerAddress = value
 	case "WorkerUrl":

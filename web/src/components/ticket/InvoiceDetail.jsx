@@ -53,7 +53,6 @@ const InvoiceDetail = ({
 
   const orderColumns = useMemo(
     () => [
-      { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
       {
         title: t('订单号'),
         dataIndex: 'trade_no',
@@ -65,13 +64,6 @@ const InvoiceDetail = ({
         key: 'money',
         width: 120,
         render: (value) => Number(value || 0).toFixed(2),
-      },
-      {
-        title: t('支付方式'),
-        dataIndex: 'payment_method',
-        key: 'payment_method',
-        width: 120,
-        render: (value) => value || '-',
       },
       {
         title: t('完成时间'),

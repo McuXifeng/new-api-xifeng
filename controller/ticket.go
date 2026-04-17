@@ -9,6 +9,7 @@ import (
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/i18n"
 	"github.com/QuantumNous/new-api/model"
+	"github.com/QuantumNous/new-api/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -160,6 +161,7 @@ func CreateTicket(c *gin.Context) {
 		handleTicketError(c, err)
 		return
 	}
+	service.NotifyTicketCreatedToAdmin(ticket, message)
 	common.ApiSuccess(c, gin.H{
 		"ticket":  ticket,
 		"message": message,
@@ -329,6 +331,7 @@ func CreateAdminTicketMessage(c *gin.Context) {
 		handleTicketError(c, err)
 		return
 	}
+	service.NotifyTicketReplyToUser(ticket, message)
 	common.ApiSuccess(c, gin.H{
 		"ticket":  ticket,
 		"message": message,
@@ -406,6 +409,7 @@ func CreateInvoiceTicket(c *gin.Context) {
 		return
 	}
 
+	service.NotifyTicketCreatedToAdmin(ticket, message)
 	common.ApiSuccess(c, gin.H{
 		"ticket":         ticket,
 		"invoice":        invoice,

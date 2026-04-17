@@ -88,6 +88,15 @@ var SMTPAccount = ""
 var SMTPFrom = ""
 var SMTPToken = ""
 
+// 工单邮件通知配置
+var TicketNotifyEnabled = false
+var TicketAdminEmail = "" // 多个邮箱使用分号(;)分隔
+
+// 支付成功邮件通知配置
+var PaymentNotifyUserEnabled = false  // 支付成功后通知下单用户
+var PaymentNotifyAdminEnabled = false // 支付成功后通知管理员
+var PaymentAdminEmail = ""            // 管理员收件邮箱，多个以分号分隔
+
 var GitHubClientId = ""
 var GitHubClientSecret = ""
 var LinuxDOClientId = ""

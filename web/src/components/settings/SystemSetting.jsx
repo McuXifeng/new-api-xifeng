@@ -46,6 +46,7 @@ import {
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import CustomOAuthSetting from './CustomOAuthSetting';
+import EmailTemplateSetting from './EmailTemplateSetting';
 
 const SystemSetting = () => {
   const { t } = useTranslation();
@@ -95,6 +96,11 @@ const SystemSetting = () => {
     EmailAliasRestrictionEnabled: '',
     SMTPSSLEnabled: '',
     SMTPForceAuthLogin: '',
+    TicketNotifyEnabled: '',
+    TicketAdminEmail: '',
+    PaymentNotifyUserEnabled: '',
+    PaymentNotifyAdminEnabled: '',
+    PaymentAdminEmail: '',
     EmailDomainWhitelist: [],
     TelegramOAuthEnabled: '',
     TelegramBotToken: '',
@@ -210,6 +216,9 @@ const SystemSetting = () => {
           case 'EmailAliasRestrictionEnabled':
           case 'SMTPSSLEnabled':
           case 'SMTPForceAuthLogin':
+          case 'TicketNotifyEnabled':
+          case 'PaymentNotifyUserEnabled':
+          case 'PaymentNotifyAdminEnabled':
           case 'LinuxDOOAuthEnabled':
           case 'discord.enabled':
           case 'oidc.enabled':
@@ -441,6 +450,38 @@ const SystemSetting = () => {
     if (options.length > 0) {
       await updateOptions(options);
     }
+  };
+
+  const submitTicketNotify = async () => {
+    const options = [
+      {
+        key: 'TicketNotifyEnabled',
+        value: inputs.TicketNotifyEnabled ? 'true' : 'false',
+      },
+      {
+        key: 'TicketAdminEmail',
+        value: (inputs.TicketAdminEmail || '').trim(),
+      },
+    ];
+    await updateOptions(options);
+  };
+
+  const submitPaymentNotify = async () => {
+    const options = [
+      {
+        key: 'PaymentNotifyUserEnabled',
+        value: inputs.PaymentNotifyUserEnabled ? 'true' : 'false',
+      },
+      {
+        key: 'PaymentNotifyAdminEnabled',
+        value: inputs.PaymentNotifyAdminEnabled ? 'true' : 'false',
+      },
+      {
+        key: 'PaymentAdminEmail',
+        value: (inputs.PaymentAdminEmail || '').trim(),
+      },
+    ];
+    await updateOptions(options);
   };
 
   const submitEmailDomainWhitelist = async () => {
@@ -1525,6 +1566,97 @@ const SystemSetting = () => {
                   <Button onClick={submitSMTP}>{t('保存 SMTP 设置')}</Button>
                 </Form.Section>
               </Card>
+              <Card>
+                <Form.Section text={t('工单邮件通知')}>
+                  <Text>
+                    {t(
+                      '依赖上方 SMTP 配置。启用后，用户创建工单时会通知管理员邮箱，管理员回复工单时会通知用户绑定邮箱（或通知邮箱），内容包含工单预览。',
+                    )}
+                  </Text>
+                  <Row
+                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
+                    style={{ marginTop: 16 }}
+                  >
+                    <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                      <Form.Checkbox
+                        field='TicketNotifyEnabled'
+                        noLabel
+                        onChange={(e) =>
+                          handleCheckboxChange('TicketNotifyEnabled', e)
+                        }
+                      >
+                        {t('启用工单邮件通知')}
+                      </Form.Checkbox>
+                    </Col>
+                    <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+                      <Form.Input
+                        field='TicketAdminEmail'
+                        label={t('管理员收件邮箱')}
+                        placeholder={t(
+                          '多个邮箱使用分号(;)或逗号分隔，例如 a@x.com;b@x.com',
+                        )}
+                      />
+                    </Col>
+                  </Row>
+                  <Button onClick={submitTicketNotify}>
+                    {t('保存工单通知设置')}
+                  </Button>
+                </Form.Section>
+              </Card>
+              <Card>
+                <Form.Section text={t('支付成功邮件通知')}>
+                  <Text>
+                    {t(
+                      '依赖上方 SMTP 配置。启用后，用户在线充值成功时，会向用户绑定邮箱（或通知邮箱）和/或管理员邮箱发送订单详情。',
+                    )}
+                  </Text>
+                  <Row
+                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
+                    style={{ marginTop: 16 }}
+                  >
+                    <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                      <Form.Checkbox
+                        field='PaymentNotifyUserEnabled'
+                        noLabel
+                        onChange={(e) =>
+                          handleCheckboxChange('PaymentNotifyUserEnabled', e)
+                        }
+                      >
+                        {t('通知下单用户')}
+                      </Form.Checkbox>
+                    </Col>
+                    <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                      <Form.Checkbox
+                        field='PaymentNotifyAdminEnabled'
+                        noLabel
+                        onChange={(e) =>
+                          handleCheckboxChange('PaymentNotifyAdminEnabled', e)
+                        }
+                      >
+                        {t('通知管理员')}
+                      </Form.Checkbox>
+                    </Col>
+                  </Row>
+                  <Row
+                    gutter={{ xs: 8, sm: 16, md: 24, lg: 24, xl: 24, xxl: 24 }}
+                    style={{ marginTop: 16 }}
+                  >
+                    <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                      <Form.Input
+                        field='PaymentAdminEmail'
+                        label={t('管理员收件邮箱')}
+                        placeholder={t(
+                          '多个邮箱使用分号(;)或逗号分隔，仅在勾选"通知管理员"时生效',
+                        )}
+                      />
+                    </Col>
+                  </Row>
+                  <Button onClick={submitPaymentNotify}>
+                    {t('保存支付通知设置')}
+                  </Button>
+                </Form.Section>
+              </Card>
+              <EmailTemplateSetting />
               <Card>
                 <Form.Section text={t('配置 OIDC')}>
                   <Text>

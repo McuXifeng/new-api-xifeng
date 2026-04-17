@@ -32,12 +32,6 @@ const OrderSelector = ({
   const columns = useMemo(
     () => [
       {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        width: 80,
-      },
-      {
         title: t('订单号'),
         dataIndex: 'trade_no',
         key: 'trade_no',
@@ -48,13 +42,6 @@ const OrderSelector = ({
         key: 'money',
         width: 120,
         render: (value) => Number(value || 0).toFixed(2),
-      },
-      {
-        title: t('支付方式'),
-        dataIndex: 'payment_method',
-        key: 'payment_method',
-        width: 120,
-        render: (value) => value || '-',
       },
       {
         title: t('完成时间'),
@@ -112,14 +99,9 @@ const OrderSelector = ({
                   />
                   <div className='flex-1 min-w-0'>
                     <Space vertical align='start' spacing={4}>
-                      <Text strong>
-                        #{order.id} · {Number(order.money || 0).toFixed(2)}
-                      </Text>
+                      <Text strong>{order.trade_no || '-'}</Text>
                       <Text type='secondary'>
-                        {t('订单号')}: {order.trade_no || '-'}
-                      </Text>
-                      <Text type='secondary'>
-                        {t('支付方式')}: {order.payment_method || '-'}
+                        {t('金额')}: {Number(order.money || 0).toFixed(2)}
                       </Text>
                       <Text type='secondary'>
                         {t('完成时间')}:{' '}
