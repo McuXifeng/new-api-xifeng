@@ -148,18 +148,20 @@ export const getRefundStatusColor = (status) => {
   }
 };
 
+const REFUND_PAYEE_TYPES = [
+  { value: 'alipay', labelKey: '支付宝' },
+  { value: 'wechat', labelKey: '微信' },
+  { value: 'bank', labelKey: '银行卡' },
+  { value: 'other', labelKey: '其他' },
+];
+
 export const getRefundPayeeTypeText = (payeeType, t) => {
-  switch (String(payeeType || '').toLowerCase()) {
-    case 'alipay':
-      return t('支付宝');
-    case 'wechat':
-      return t('微信');
-    case 'bank':
-      return t('银行卡');
-    case 'other':
-      return t('其他');
-    default:
-      return '-';
-  }
+  const item = REFUND_PAYEE_TYPES.find(
+    (x) => x.value === String(payeeType || '').toLowerCase(),
+  );
+  return item ? t(item.labelKey) : '-';
 };
+
+export const getRefundPayeeTypeOptions = (t) =>
+  REFUND_PAYEE_TYPES.map((x) => ({ label: t(x.labelKey), value: x.value }));
 

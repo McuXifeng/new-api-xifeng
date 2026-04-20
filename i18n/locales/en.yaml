@@ -160,6 +160,8 @@ ticket.refund_payee_name_empty: "Payee name cannot be empty"
 ticket.refund_payee_account_empty: "Payee account cannot be empty"
 ticket.refund_payee_bank_empty: "Bank name cannot be empty"
 ticket.refund_contact_empty: "Contact info cannot be empty"
+ticket.refund_not_pending: "Refund request is no longer pending"
+ticket.refund_quota_mode_invalid: "Invalid quota operation mode"
 
 # Payment messages
 payment.not_configured: "Payment information has not been configured by administrator"

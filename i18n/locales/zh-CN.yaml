@@ -161,6 +161,8 @@ ticket.refund_payee_name_empty: "收款人姓名不能为空"
 ticket.refund_payee_account_empty: "收款账号不能为空"
 ticket.refund_payee_bank_empty: "开户行不能为空"
 ticket.refund_contact_empty: "联系方式不能为空"
+ticket.refund_not_pending: "退款申请已不在待处理状态"
+ticket.refund_quota_mode_invalid: "无效的额度处理方式"
 
 # Payment messages
 payment.not_configured: "当前管理员未配置支付信息"

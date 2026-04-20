@@ -176,12 +176,14 @@ const AdminTicketDetail = () => {
     }
   };
 
-  const handleRefundStatusChange = async (refundStatus) => {
+  const handleRefundStatusChange = async (refundStatus, extra = {}) => {
     setSaving(true);
     try {
-      const res = await API.put(`/api/ticket/admin/${id}/refund/status`, {
-        refund_status: refundStatus,
-      });
+      const payload = { refund_status: refundStatus, ...extra };
+      const res = await API.put(
+        `/api/ticket/admin/${id}/refund/status`,
+        payload,
+      );
       if (res.data?.success) {
         showSuccess(t('退款状态已更新'));
         await loadDetail();

@@ -180,6 +180,8 @@ const (
 	MsgTicketRefundPayeeAccountEmpty = "ticket.refund_payee_account_empty"
 	MsgTicketRefundPayeeBankEmpty  = "ticket.refund_payee_bank_empty"
 	MsgTicketRefundContactEmpty    = "ticket.refund_contact_empty"
+	MsgTicketRefundNotPending      = "ticket.refund_not_pending"
+	MsgTicketRefundQuotaModeInvalid = "ticket.refund_quota_mode_invalid"
 )
 
 // Payment related messages

@@ -60,7 +60,9 @@ type CreateRefundTicketRequest struct {
 }
 
 type UpdateRefundStatusRequest struct {
-	RefundStatus int `json:"refund_status"`
+	RefundStatus      int    `json:"refund_status"`
+	QuotaMode         string `json:"quota_mode"`
+	ActualRefundQuota *int   `json:"actual_refund_quota,omitempty"`
 }
 
 func getTicketCurrentUser(c *gin.Context) (*model.User, error) {
@@ -138,6 +140,10 @@ func handleTicketError(c *gin.Context, err error) {
 		common.ApiErrorI18n(c, i18n.MsgTicketRefundPayeeBankEmpty)
 	case errors.Is(err, model.ErrTicketRefundContactEmpty):
 		common.ApiErrorI18n(c, i18n.MsgTicketRefundContactEmpty)
+	case errors.Is(err, model.ErrTicketRefundNotPending):
+		common.ApiErrorI18n(c, i18n.MsgTicketRefundNotPending)
+	case errors.Is(err, model.ErrTicketRefundQuotaModeInvalid):
+		common.ApiErrorI18n(c, i18n.MsgTicketRefundQuotaModeInvalid)
 	default:
 		common.ApiError(c, err)
 	}
@@ -544,7 +550,17 @@ func UpdateRefundStatus(c *gin.Context) {
 		return
 	}
 
-	refund, ticket, err := model.UpdateRefundStatus(ticketId, c.GetInt("id"), req.RefundStatus)
+	params := model.UpdateRefundStatusParams{
+		TicketId:     ticketId,
+		AdminId:      c.GetInt("id"),
+		RefundStatus: req.RefundStatus,
+		QuotaMode:    req.QuotaMode,
+	}
+	if req.ActualRefundQuota != nil {
+		params.ActualRefundQuota = *req.ActualRefundQuota
+	}
+
+	refund, ticket, err := model.UpdateRefundStatus(params)
 	if err != nil {
 		handleTicketError(c, err)
 		return

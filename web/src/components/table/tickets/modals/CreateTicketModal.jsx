@@ -12,18 +12,12 @@ import {
   quotaToDisplayAmount,
 } from '../../../../helpers/quota';
 import {
+  getRefundPayeeTypeOptions,
   getTicketPriorityOptions,
   getTicketTypeOptions,
 } from '../../../ticket/ticketUtils';
 
 const { Text } = Typography;
-
-const payeeTypeOptions = (t) => [
-  { label: t('支付宝'), value: 'alipay' },
-  { label: t('微信'), value: 'wechat' },
-  { label: t('银行卡'), value: 'bank' },
-  { label: t('其他'), value: 'other' },
-];
 
 const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
   const [loading, setLoading] = useState(false);
@@ -103,7 +97,13 @@ const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
         };
         const res = await API.post('/api/ticket/refund/', payload);
         if (res.data?.success) {
-          showSuccess(t('工单创建成功'));
+          showSuccess(t('工单创建成功，额度已冻结'));
+          // 通知全局：用户额度已变化，已订阅的组件（如个人中心）可据此刷新。
+          try {
+            window.dispatchEvent(new CustomEvent('user-quota-changed'));
+          } catch (e) {
+            // 某些浏览器环境可能不支持 CustomEvent 构造，忽略即可
+          }
           onSuccess?.(res.data?.data);
           onClose?.();
         } else {
@@ -187,18 +187,28 @@ const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
         />
 
         {ticketType === 'refund' && (
-          <Banner
-            type='info'
-            closeIcon={null}
-            description={
-              quotaLoading
-                ? t('加载中...')
-                : `${t('当前可用额度')}：${renderQuotaWithAmount(
-                    Number(quotaToDisplayAmount(userQuota).toFixed(6)),
-                  )}`
-            }
-            className='!mb-3'
-          />
+          <>
+            <Banner
+              type='info'
+              closeIcon={null}
+              description={
+                quotaLoading
+                  ? t('加载中...')
+                  : `${t('当前可用额度')}：${renderQuotaWithAmount(
+                      Number(quotaToDisplayAmount(userQuota).toFixed(6)),
+                    )}`
+              }
+              className='!mb-3'
+            />
+            <Banner
+              type='warning'
+              closeIcon={null}
+              description={t(
+                '提交后所申请的金额将立即被冻结，期间无法使用，且剩余可用额度会相应减少。管理员驳回后额度会解冻并可重新申请；通过后将正式扣除。',
+              )}
+              className='!mb-3'
+            />
+          </>
         )}
 
         <Form.Input
@@ -252,7 +262,7 @@ const CreateTicketModal = ({ visible, onClose, onSuccess, t }) => {
             <Form.Select
               field='payee_type'
               label={t('收款方式')}
-              optionList={payeeTypeOptions(t)}
+              optionList={getRefundPayeeTypeOptions(t)}
               getPopupContainer={() => document.body}
               rules={[{ required: true, message: t('请选择收款方式') }]}
             />
